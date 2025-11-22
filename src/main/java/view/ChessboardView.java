@@ -10,4 +10,13 @@ package view;
  */
 public class ChessboardView {
     
+    /** Method that displays the chessboard with all 8 queens placed on it */
+    public void displayChessboard(char[][] board ) {
+        for (int i=0; i<8; i++) {
+            for (int j=0; j<8; j++) {
+                System.out.print(board[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
 }
