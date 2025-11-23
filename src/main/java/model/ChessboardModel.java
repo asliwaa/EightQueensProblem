@@ -4,11 +4,13 @@
  */
 package model;
 
+import model.InvalidPositionException;
+
 /**
  *
  * @author Adam
  */
-public class ChessboardModel {
+public class ChessboardModel{
     
     /** Constructor initializing an empty chessboard */
     public ChessboardModel() {
@@ -49,6 +51,28 @@ public class ChessboardModel {
         board[row][col] = QUEEN_SYMBOL;
     }
     
-    
+    public void isValidPlacement(String pos) throws InvalidPositionException {
+        //Checks if given position is not null and is of correct length
+        if (pos==null || pos.length()!=2) {
+            throw new InvalidPositionException("User input is too short or too long.");
+        }
+        
+        String posUC = pos.toUpperCase();   
+        char c = posUC.charAt(0);
+        char r = posUC.charAt(1);
+        
+        //Checks if given position is in the correct format: XY where X=[A,H] and Y=[1,8]
+        if (c<'A' || c>'H' || r<'1' || r>'8') {
+            throw new InvalidPositionException("Position out of range.");
+        }
+        
+        int col = c - 'A';
+        int row = r - '1';
+        
+        //Checks if given position is occupied
+        if(board[row][col] != EMPTY_SYMBOL) {
+            throw new InvalidPositionException("Position occupied by other queen");
+        }   
+    }
     
 }

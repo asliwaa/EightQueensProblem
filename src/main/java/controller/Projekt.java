@@ -13,6 +13,13 @@ import view.ChessboardView;
  */
 public class Projekt {
     
+    /**
+     * Depending on the content of command line arguments launches the app.
+     * - if they meet the requirements, launches commandLineInput method from the controller
+     * - if they don't, launches userInput method from the controller
+     * 
+     * @param args Should contain 8 positions in this format: XY, where X = [A,H] and Y = [1,8]
+     */
     public static void main(String[] args) {
         ChessboardModel model = new ChessboardModel();
         ChessboardView view = new ChessboardView();

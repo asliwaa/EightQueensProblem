@@ -5,6 +5,7 @@
 package controller;
 
 import model.ChessboardModel;
+import model.InvalidPositionException;
 import view.ChessboardView;
 
 import java.util.Scanner;
@@ -36,25 +37,55 @@ public class ChessboardController {
     /** Method that places queens based on positions provided by the user */
     public void userInput() {
         
-        /** Scanner initializer, placed before the 'for' loop so it doesn't block the input stream*/
-        Scanner scanner = new Scanner(System.in);
         /** Variable used to display the number of the queen which position being entered by user. */
+        /*
         int n=1;
 
         for (int i=0; i<8; i++) {
-                
-
+            System.out.print("Enter position of the " + n + " Queen: ");
+            String pos = scanner.next();
+            
+            while(!model.isValidPlacement(pos)) {
+                System.out.println("Wrong position format or position occupied.");
                 System.out.print("Enter position of the " + n + " Queen: ");
-                String pos = scanner.next();
-
-                n++;
-
-                model.placeQueen(pos);
+                pos = scanner.next();
             }
 
-            System.out.println();
-            System.out.println();
-            view.displayChessboard(model.getBoard());
+            model.placeQueen(pos);
+            n++;
+        }
+
+        System.out.println();
+        System.out.println();
+        view.displayChessboard(model.getBoard());*/
+        
+        int n=1;
+        
+        try (Scanner scanner = new Scanner(System.in)) {
+            while(n<=8) {
+                boolean success = false;
+                
+                while(!success) {
+                    System.out.print("Enter position of the " + n + " Queen: ");
+                    String pos = scanner.next();
+                    
+                    try {
+                        model.isValidPlacement(pos);
+                        
+                        success = true;
+                        model.placeQueen(pos);
+                    } catch(InvalidPositionException e) {
+                        System.out.println("ERROR: " + e.getMessage());
+                        System.out.println("Try again.");
+                    }
+                }
+                n++;
+            }
+        }
+        
+        System.out.println();
+        System.out.println();
+        view.displayChessboard(model.getBoard());
     }
 
 }
