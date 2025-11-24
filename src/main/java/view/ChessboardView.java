@@ -19,4 +19,13 @@ public class ChessboardView {
             System.out.println();
         }
     }
+    
+    /** Displays message validating queens placement */
+    public void displayValidationResult(boolean valid) {
+        if (valid) {
+            System.out.println("Valid placement, queens do not attack each other.");
+        } else {
+            System.out.println("Invalid placement, queen is being attacked.");
+        }
+    }
 }

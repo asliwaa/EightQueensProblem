@@ -32,6 +32,9 @@ public class ChessboardModel{
     /** Constant variable for the */
     private static final char EMPTY_SYMBOL = '#';
     
+    /** Array for accepted positions */
+    private char[] acceptedPositions = new char[SIZE];
+    
     /** Method that clears the chessboard, used in the constructor */
     public void clearBoard() {
         for (int i=0; i<SIZE; i++) {
@@ -49,6 +52,7 @@ public class ChessboardModel{
         int row = posUC.charAt(1) - '1';
         
         board[row][col] = QUEEN_SYMBOL;
+        
     }
     
     public void isValidPlacement(String pos) throws InvalidPositionException {
@@ -73,6 +77,42 @@ public class ChessboardModel{
         if(board[row][col] != EMPTY_SYMBOL) {
             throw new InvalidPositionException("Position occupied by other queen");
         }   
+    }
+    
+    public boolean isSolutionValid() {
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+                if (board[r][c] == QUEEN_SYMBOL) {
+                    if (attacksAnotherQueen(r, c)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
+    /** Checks whether a queen attacks any other queen. */
+    private boolean attacksAnotherQueen(int row, int col) {
+        // Check row and column
+        for (int i = 0; i < SIZE; i++) {
+            if (i != col && board[row][i] == QUEEN_SYMBOL) return true;
+            if (i != row && board[i][col] == QUEEN_SYMBOL) return true;
+        }
+
+        // Check diagonals
+        int[] dr = {-1, -1, 1, 1};
+        int[] dc = {-1, 1, -1, 1};
+        for (int d = 0; d < 4; d++) {
+            int r = row + dr[d];
+            int c = col + dc[d];
+            while (r >= 0 && r < SIZE && c >= 0 && c < SIZE) {
+                if (board[r][c] == QUEEN_SYMBOL) return true;
+                r += dr[d];
+                c += dc[d];
+            }
+        }
+        return false;
     }
     
 }

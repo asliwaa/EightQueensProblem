@@ -26,39 +26,30 @@ public class ChessboardController {
     }
     
     /** Method that places queens based on positions provided by command line arguments */
-    public void commandLineInput(String[] a) {
-        for (int i=0; i<8; i++) {
-            model.placeQueen(a[i]);
+    public void commandLineInput(String[] a) { 
+        for (int i=0; i<a.length; i++) {
+            String pos = a[i];
+            
+            try {
+                model.isValidPlacement(pos);
+
+                model.placeQueen(pos);
+                
+                if(i == 7) {
+                    view.displayChessboard(model.getBoard());
+                }
+                
+            } catch (InvalidPositionException e) {
+                System.out.println("ERROR: Incorrect command line argument has been found - " + e.getMessage());
+                System.out.println("Switching to user input.");
+                
+                userInput();
+            }
         }
-        
-        view.displayChessboard(model.getBoard());
     }
     
     /** Method that places queens based on positions provided by the user */
     public void userInput() {
-        
-        /** Variable used to display the number of the queen which position being entered by user. */
-        /*
-        int n=1;
-
-        for (int i=0; i<8; i++) {
-            System.out.print("Enter position of the " + n + " Queen: ");
-            String pos = scanner.next();
-            
-            while(!model.isValidPlacement(pos)) {
-                System.out.println("Wrong position format or position occupied.");
-                System.out.print("Enter position of the " + n + " Queen: ");
-                pos = scanner.next();
-            }
-
-            model.placeQueen(pos);
-            n++;
-        }
-
-        System.out.println();
-        System.out.println();
-        view.displayChessboard(model.getBoard());*/
-        
         int n=1;
         
         try (Scanner scanner = new Scanner(System.in)) {
@@ -86,6 +77,8 @@ public class ChessboardController {
         System.out.println();
         System.out.println();
         view.displayChessboard(model.getBoard());
+        view.displayValidationResult(model.isSolutionValid());
     }
-
+    
 }
+
