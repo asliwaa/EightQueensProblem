@@ -1,86 +1,132 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package controller;
 
 import model.ChessboardModel;
 import model.InvalidPositionException;
-import view.ChessboardView;
+import view.ChessboardBoardView;
+import view.ChessboardEntryView;
 
-import java.util.Scanner;
+import java.awt.event.ActionEvent;
 
 /**
- *
- * @author Adam
+ * Controller class managing the interaction between the Model and the Views.
+ * It handles user inputs, updates the model state, and switches between views.
  */
 public class ChessboardController {
     
+    /** Reference to the data model */
     private final ChessboardModel model;
-    private final ChessboardView view;
+    /** Reference to the input view (first window) */
+    private final ChessboardEntryView entryView;
+    /** Reference to the board visualization view (second window) */
+    private final ChessboardBoardView boardView;
     
-    /** Constructor initializing the controller */
-    public ChessboardController(ChessboardModel model, ChessboardView view) {
+    /** Counter for the current queen being placed (1-8) */
+    private int currentQueenCounter = 1;
+    
+    /**
+     * Constructor initializing the controller with model and views.
+     * It also sets up the event listeners and shows the initial view.
+     * * @param model The game logic model.
+     * @param entryView The view for entering positions.
+     * @param boardView The view for displaying the chessboard.
+     */
+    public ChessboardController(ChessboardModel model, ChessboardEntryView entryView, ChessboardBoardView boardView) {
         this.model = model;
-        this.view = view;
+        this.entryView = entryView;
+        this.boardView = boardView;
+        
+        initController();
     }
     
-    /** Method that places queens based on positions provided by command line arguments */
-    public void commandLineInput(String[] a) { 
-        for (int i=0; i<a.length; i++) {
-            String pos = a[i];
+    /**
+     * Sets up event listeners for buttons in the views and initializes the first screen.
+     */
+    private void initController() {
+        // 1. Attach logic to the "Confirm" button in the entry view
+        entryView.addConfirmListener((ActionEvent e) -> handleConfirmClick());
+        
+        // 2. Attach logic to the "Reset" button in the board view
+        boardView.addResetListener((ActionEvent e) -> handleResetClick());
+        
+        // 3. Display the first window (Entry View)
+        entryView.setVisible(true);
+    }
+    
+    /**
+     * Handles the action when the "Confirm" button is clicked.
+     * Validates input, updates the model, and proceeds to the next queen or finishes input.
+     */
+    private void handleConfirmClick() {
+        String pos = entryView.getTypedPosition();
+        
+        try {
+            // A. Validate in Model (check format and if the square is empty)
+            model.isValidPlacement(pos);
             
-            try {
-                model.isValidPlacement(pos);
-
-                model.placeQueen(pos);
-                
-                if(i == 7) {
-                    view.displayChessboard(model.getBoard());
-                    view.displayValidationResult(model.isSolutionValid());
-
-                }
-                
-            } catch (InvalidPositionException e) {
-                System.out.println("ERROR: Incorrect command line argument has been found - " + e.getMessage());
-                System.out.println("Switching to user input.");
-                
-                userInput();
+            // B. If valid -> Save to model
+            model.placeQueen(pos);
+            
+            // C. Update the entry view (add to list and clear input)
+            entryView.addAcceptedPosition(currentQueenCounter, pos);
+            entryView.clearInput();
+            
+            // D. Proceed to the next queen
+            currentQueenCounter++;
+            
+            if (currentQueenCounter > 8) {
+                // END OF INPUT -> Switch views
+                finishInputPhase();
+            } else {
+                // Update the queen number label for the user
+                entryView.setNr(currentQueenCounter);
             }
+            
+        } catch (InvalidPositionException ex) {
+            // E. Error handling - show popup message
+            entryView.showError(ex.getMessage());
+            // Optionally clear input to allow retry
+            entryView.clearInput();
         }
     }
     
-    /** Method that places queens based on positions provided by the user */
-    public void userInput() {
-        int n=1;
+    /**
+     * Finalizes the input phase, hides the entry window, and displays the result board.
+     * Checks if the placed queens form a valid solution.
+     */
+    private void finishInputPhase() {
+        // Hide the entry window
+        entryView.setVisible(false);
         
-        try (Scanner scanner = new Scanner(System.in)) {
-            while(n<=8) {
-                boolean success = false;
-                
-                while(!success) {
-                    System.out.print("Enter position of the " + n + " Queen: ");
-                    String pos = scanner.next();
-                    
-                    try {
-                        model.isValidPlacement(pos);
-                        
-                        success = true;
-                        model.placeQueen(pos);
-                    } catch(InvalidPositionException e) {
-                        System.out.println("ERROR: " + e.getMessage());
-                        System.out.println("Try again.");
-                    }
-                }
-                n++;
-            }
+        // Update the board window with data from the model
+        boardView.updateBoard(model.getBoard());
+        
+        // Check if the solution is correct (no attacks)
+        boolean valid = model.isSolutionValid();
+        
+        if (valid) {
+            boardView.setStatus("✅ SUCCESS! No queens are attacking each other.");
+        } else {
+            boardView.setStatus("❌ FAILURE. Queens are attacking each other.");
         }
         
-        System.out.println();
-        System.out.println();
-        view.displayChessboard(model.getBoard());
-        view.displayValidationResult(model.isSolutionValid());
+        // Show the board window
+        boardView.setVisible(true);
     }
     
+    /**
+     * Handles the action when the "Reset" button is clicked.
+     * Clears the model and views, and returns to the input phase.
+     */
+    private void handleResetClick() {
+        // 1. Logical reset (clear model data and counter)
+        model.clearBoard();
+        currentQueenCounter = 1;
+        
+        // 2. Visual reset (clear lists and inputs in views)
+        entryView.reset(); 
+        
+        // 3. Switch windows (Hide board, Show entry)
+        boardView.setVisible(false);
+        entryView.setVisible(true);
+    }
 }
-
