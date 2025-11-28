@@ -37,6 +37,8 @@ public class ChessboardController {
                 
                 if(i == 7) {
                     view.displayChessboard(model.getBoard());
+                    view.displayValidationResult(model.isSolutionValid());
+
                 }
                 
             } catch (InvalidPositionException e) {

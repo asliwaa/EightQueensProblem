@@ -29,11 +29,6 @@ public class Projekt {
         int numOfParams = args.length;
         
         if(numOfParams == 8) {
-            int a=1;
-            int b=2;
-            char c=(char)a;
-
-            System.out.println(c);
             controller.commandLineInput(args);
         } else {
             controller.userInput();
