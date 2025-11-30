@@ -53,15 +53,18 @@ public class ChessboardModel{
         }
     }
     
+    public Position parse(String pos) {
+        String posUC = pos.toUpperCase();
+        int c = posUC.charAt(0) - 'A';
+        int r = posUC.charAt(1) - '1';
+        return new Position(r,c);
+    }
     
     /** Method that places a queen */
     public void placeQueen(String pos) {
-        String posUC = pos.toUpperCase();
+        Position p = parse(pos);
         
-        int col = posUC.charAt(0) - 'A';
-        int row = posUC.charAt(1) - '1';
-        
-        board.get(row).set(col, QUEEN_SYMBOL);
+        board.get(p.row()).set(p.col(), QUEEN_SYMBOL);
     }
     
     public void isValidPlacement(String pos) throws InvalidPositionException {
@@ -70,20 +73,15 @@ public class ChessboardModel{
             throw new InvalidPositionException("User input is too short or too long.");
         }
         
-        String posUC = pos.toUpperCase();   
-        char c = posUC.charAt(0);
-        char r = posUC.charAt(1);
+        Position p = parse(pos);
         
         //Checks if given position is in the correct format: XY where X=[A,H] and Y=[1,8]
-        if (c<'A' || c>'H' || r<'1' || r>'8') {
+        if (p.col()<0 || p.col()>7 || p.row()<0 || p.row()>7) {
             throw new InvalidPositionException("Position out of range.");
         }
         
-        int col = c - 'A';
-        int row = r - '1';
-        
         //Checks if given position is occupied
-        if(board.get(row).get(col) != EMPTY_SYMBOL) {
+        if(board.get(p.row()).get(p.col()) != EMPTY_SYMBOL) {
             throw new InvalidPositionException("Position occupied by other queen");
         }   
     }
@@ -93,7 +91,8 @@ public class ChessboardModel{
         for (int r = 0; r < SIZE; r++) {
             for (int c = 0; c < SIZE; c++) {
                 if (board.get(r).get(c) == QUEEN_SYMBOL) {
-                    if (attacksAnotherQueen(r, c)) {
+                    Position foundQueen = new Position(r,c);
+                    if (attacksAnotherQueen(foundQueen)) {
                         return false;
                     }
                 }
@@ -103,19 +102,22 @@ public class ChessboardModel{
     }
     
     /** Checks whether a queen attacks any other queen. */
-    private boolean attacksAnotherQueen(int row, int col) {
+    private boolean attacksAnotherQueen(Position p) {
+        //int row = p.row();
+        //int col = p.col();
+        
         // Check row and column
         for (int i = 0; i < SIZE; i++) {
-            if (i != col && board.get(row).get(i) == QUEEN_SYMBOL) return true;
-            if (i != row && board.get(i).get(col) == QUEEN_SYMBOL) return true;
+            if (i != p.col() && board.get(p.row()).get(i) == QUEEN_SYMBOL) return true;
+            if (i != p.row() && board.get(i).get(p.col()) == QUEEN_SYMBOL) return true;
         }
 
         // Check diagonals
         int[] dr = {-1, -1, 1, 1};
         int[] dc = {-1, 1, -1, 1};
         for (int d = 0; d < 4; d++) {
-            int r = row + dr[d];
-            int c = col + dc[d];
+            int r = p.row() + dr[d];
+            int c = p.col() + dc[d];
             while (r >= 0 && r < SIZE && c >= 0 && c < SIZE) {
                 if (board.get(r).get(c) == QUEEN_SYMBOL) return true;
                 r += dr[d];

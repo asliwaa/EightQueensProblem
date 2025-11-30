@@ -19,16 +19,15 @@ public class Projekt {
         // Swing applications must start in the Event Dispatch Thread (EDT) for thread safety
         SwingUtilities.invokeLater(() -> {
             
-            // 1. Initialize the Model
+            //Initialize the Model
             ChessboardModel model = new ChessboardModel();
             
-            // 2. Initialize both Views (initially invisible)
+            //Initialize both Views (initially invisible)
             ChessboardEntryView entryView = new ChessboardEntryView();
             ChessboardBoardView boardView = new ChessboardBoardView();
             
-            // 3. Initialize the Controller which manages the application flow
-            // (The Controller's constructor will set entryView.setVisible(true))
-            new ChessboardController(model, entryView, boardView);
+            // Initialize the Controller which manages the application flow (The Controller's constructor will set entryView.setVisible(true))
+            new ChessboardController(model, entryView, boardView, args);
         });
     }
 }

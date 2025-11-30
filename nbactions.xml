@@ -12,7 +12,7 @@
             <properties>
                 <exec.vmArgs></exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
-                <exec.appArgs>a1 a2 b5 b6 g8 c6 d5 e3</exec.appArgs>
+                <exec.appArgs>a1 b7 c5 d8 e2 f4 g6 h3</exec.appArgs>
                 <exec.mainClass>controller.Projekt</exec.mainClass>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir>C:\Users\Adam\Desktop\STUDIA\SEM5\JwIUM\EQP</exec.workingdir>
@@ -30,7 +30,7 @@
             <properties>
                 <exec.vmArgs>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
-                <exec.appArgs>a1 a2 b5 b6 g8 c6 d5 e3</exec.appArgs>
+                <exec.appArgs>a1 b7 c5 d8 e2 f4 g6 h3</exec.appArgs>
                 <exec.mainClass>controller.Projekt</exec.mainClass>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
@@ -51,7 +51,7 @@
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.mainClass>controller.Projekt</exec.mainClass>
                 <exec.executable>java</exec.executable>
-                <exec.appArgs>a1 a2 b5 b6 g8 c6 d5 e3</exec.appArgs>
+                <exec.appArgs>a1 b7 c5 d8 e2 f4 g6 h3</exec.appArgs>
                 <exec.workingdir>C:\Users\Adam\Desktop\STUDIA\SEM5\JwIUM\EQP</exec.workingdir>
             </properties>
         </action>
