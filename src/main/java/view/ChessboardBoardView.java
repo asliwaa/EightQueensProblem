@@ -6,6 +6,7 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * 
@@ -14,7 +15,8 @@ import java.awt.event.ActionListener;
 public class ChessboardBoardView extends JFrame {
     
     /** 8x8 array of JButtons representing the chessboard cells. */
-    private final JButton[][] cells = new JButton[8][8];
+    //private final JButton[][] cells = new JButton[8][8];
+    private final ArrayList<ArrayList<JButton>> cells = new ArrayList<ArrayList<JButton>>(8);
     /** Label at the bottom displaying the placement status. */
     private final JLabel statusLabel = new JLabel("", SwingConstants.CENTER);
     /** Button to start a new game/reset the board. */
@@ -52,19 +54,33 @@ public class ChessboardBoardView extends JFrame {
 
         // Center: board with row labels
         JPanel center = new JPanel(new GridLayout(8, 9));
+        
         for (int r = 0; r < 8; r++) {
-            // row number
+            // A. Tworzymy listę dla wiersza przycisków
+            ArrayList<JButton> rowList = new ArrayList<>();
+            
+            // row number label
             center.add(new JLabel(String.valueOf(r+1), SwingConstants.CENTER));
+            
             for (int c = 0; c < 8; c++) {
                 JButton cell = new JButton("#");
                 cell.setEnabled(false);
                 cell.setFocusable(false);
+                
                 if ((r + c) % 2 == 0) cell.setBackground(Color.WHITE);
                 else cell.setBackground(Color.LIGHT_GRAY);
-                cells[r][c] = cell;
+                
+                // B. Dodajemy przycisk do listy wiersza
+                rowList.add(cell);
+                
+                // Dodajemy przycisk do panelu (wizualnie)
                 center.add(cell);
             }
+            
+            // C. Dodajemy wiersz do głównej listy cells
+            cells.add(rowList);
         }
+        
         mainPanel.add(center, BorderLayout.CENTER);
         cp.add(mainPanel, BorderLayout.CENTER);
 
@@ -88,11 +104,19 @@ public class ChessboardBoardView extends JFrame {
     }
 
     /** Update board cells from an 8x8 char[][] (expect '#' or 'X') */
-    public void updateBoard(char[][] board) {
-        if (board == null || board.length != 8) return;
+    public void updateBoard(ArrayList<ArrayList<Character>> board) {
+        if (board == null || board.size() != 8) return;
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++) {
-                cells[r][c].setText(String.valueOf(board[r][c]));
+                Character symbol = board.get(r).get(c);
+                JButton btn = cells.get(r).get(c);
+                
+                if (symbol == 'X') {
+                btn.setText("X"); // Ładny symbol hetmana
+                //btn.setForeground(Color.BLACK);
+            } else {
+                btn.setText("#"); // Puste pole (lub "#" jeśli wolisz)
+            }
             }
         }
     }

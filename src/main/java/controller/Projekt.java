@@ -13,7 +13,6 @@ public class Projekt {
     
     /**
      * The main entry point of the application.
-     * It initializes the Model-View-Controller (MVC) components within the Swing Event Dispatch Thread.
      * * @param args Command line arguments (not used in this version).
      */
     public static void main(String[] args) {

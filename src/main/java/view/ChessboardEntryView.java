@@ -37,8 +37,8 @@ public class ChessboardEntryView extends JFrame {
         super("Eight Queens - Entry");  
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
         initComponents();              
-        pack();                        
-        setLocationRelativeTo(null);   
+        pack(); //Fits the app window to the components inside of it                        
+        setLocationRelativeTo(null); //Centers app on the screen  
     }
     
     private void initComponents() {
