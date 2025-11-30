@@ -35,7 +35,7 @@ public class ChessboardEntryView extends JFrame {
     /** Constructs the ChessboardEntryView and initializes the GUI components. */
     public ChessboardEntryView() {
         super("Eight Queens - Entry");  
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
         initComponents();              
         pack(); //Fits the app window to the components inside of it                        
         setLocationRelativeTo(null); //Centers app on the screen  

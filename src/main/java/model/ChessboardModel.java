@@ -5,11 +5,13 @@
 package model;
 
 import java.util.ArrayList;
+import lombok.*;
 
 /**
  *
  * @author Adam
  */
+@Getter
 public class ChessboardModel{
     
     /** Constructor initializing an empty chessboard */
@@ -21,11 +23,6 @@ public class ChessboardModel{
     private static final int SIZE = 8;
     /** Double array list representing the chessboard */
     private ArrayList<ArrayList<Character>> board = new ArrayList<ArrayList<Character>>();
-    
-    /** Getter for the board array list */
-    public ArrayList<ArrayList<Character>> getBoard() {
-        return board;
-    }
     
     /** Constant variable for the queen symbol */
     private static final Character QUEEN_SYMBOL = 'X';

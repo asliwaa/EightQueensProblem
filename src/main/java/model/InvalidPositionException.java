@@ -4,12 +4,16 @@
  */
 package model;
 
+import lombok.experimental.StandardException;
+
 /**
  *
  * @author Adam
  */
+@StandardException
 public class InvalidPositionException extends Exception {
+    /*
     public InvalidPositionException(String message) {
         super(message);
-    }
+    }*/
 }

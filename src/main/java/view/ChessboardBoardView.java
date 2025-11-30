@@ -27,7 +27,7 @@ public class ChessboardBoardView extends JFrame {
      */
     public ChessboardBoardView() {
         super("Eight Queens - Board");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         initComponents();
         pack();
         setLocationRelativeTo(null);
