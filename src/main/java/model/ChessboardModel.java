@@ -22,15 +22,12 @@ public class ChessboardModel{
     /** Board dimension */
     private static final int SIZE = 8;
     /** Double array list representing the chessboard */
-    private ArrayList<ArrayList<Character>> board = new ArrayList<ArrayList<Character>>();
+    private ArrayList<ArrayList<SquareState>> board = new ArrayList<ArrayList<SquareState>>();
     
     /** Constant variable for the queen symbol */
-    private static final Character QUEEN_SYMBOL = 'X';
+    //private static final Character QUEEN_SYMBOL = 'X';
     /** Constant variable for the */
-    private static final Character EMPTY_SYMBOL = '#';
-    
-    /** ArrayList for accepted positions */
-    private ArrayList<Character> acceptedPositions = new ArrayList<Character>();
+    //private static final Character EMPTY_SYMBOL = '#';
     
     /** Method that clears the chessboard */
     public void clearBoard() {
@@ -38,11 +35,11 @@ public class ChessboardModel{
         
         for (int i = 0; i < SIZE; i++) {
             //New ArrayList representing a row
-            ArrayList<Character> row = new ArrayList<>();
+            ArrayList<SquareState> row = new ArrayList<SquareState>();
             
             for (int j = 0; j < SIZE; j++) {
                 //Filling newly created row with empty symbols
-                row.add(EMPTY_SYMBOL);
+                row.add(SquareState.EMPTY);
             }
             
             //Adding the empty row to the main chessboard
@@ -61,7 +58,7 @@ public class ChessboardModel{
     public void placeQueen(String pos) {
         Position p = parse(pos);
         
-        board.get(p.row()).set(p.col(), QUEEN_SYMBOL);
+        board.get(p.row()).set(p.col(), SquareState.QUEEN);
     }
     
     public void isValidPlacement(String pos) throws InvalidPositionException {
@@ -78,23 +75,34 @@ public class ChessboardModel{
         }
         
         //Checks if given position is occupied
-        if(board.get(p.row()).get(p.col()) != EMPTY_SYMBOL) {
+        if(board.get(p.row()).get(p.col()) != SquareState.EMPTY) {
             throw new InvalidPositionException("Position occupied by other queen");
         }   
+    }
+    /** Scans chessboard and returns a position if it's occupied by a queen */
+    private ArrayList<Position> getQueenPositions() {
+        ArrayList<Position> queens = new ArrayList<Position>();
+        
+        for (int r=0; r<SIZE; r++) {
+            for (int c=0; c<SIZE; c++) {
+                if(board.get(r).get(c) == SquareState.QUEEN) {
+                    queens.add(new Position(r,c));
+                }
+            }
+        }
+        
+        return queens;
     }
     
     /** Searches for a queen on the board, if found runs attackAnotherQueen to check if placement is correct for the puzzle */
     public boolean isSolutionValid() {
-        for (int r = 0; r < SIZE; r++) {
-            for (int c = 0; c < SIZE; c++) {
-                if (board.get(r).get(c) == QUEEN_SYMBOL) {
-                    Position foundQueen = new Position(r,c);
-                    if (attacksAnotherQueen(foundQueen)) {
-                        return false;
-                    }
-                }
-            }
+        ArrayList<Position> foundQueens = getQueenPositions();
+        
+        for(Position p : foundQueens) {
+            if(attacksAnotherQueen(p))
+                return false;
         }
+        
         return true;
     }
     
@@ -105,8 +113,8 @@ public class ChessboardModel{
         
         // Check row and column
         for (int i = 0; i < SIZE; i++) {
-            if (i != p.col() && board.get(p.row()).get(i) == QUEEN_SYMBOL) return true;
-            if (i != p.row() && board.get(i).get(p.col()) == QUEEN_SYMBOL) return true;
+            if (i != p.col() && board.get(p.row()).get(i) == SquareState.QUEEN) return true;
+            if (i != p.row() && board.get(i).get(p.col()) == SquareState.QUEEN) return true;
         }
 
         // Check diagonals
@@ -116,7 +124,7 @@ public class ChessboardModel{
             int r = p.row() + dr[d];
             int c = p.col() + dc[d];
             while (r >= 0 && r < SIZE && c >= 0 && c < SIZE) {
-                if (board.get(r).get(c) == QUEEN_SYMBOL) return true;
+                if (board.get(r).get(c) == SquareState.QUEEN) return true;
                 r += dr[d];
                 c += dc[d];
             }

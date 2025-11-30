@@ -8,6 +8,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import model.SquareState;
+
 /**
  * 
  * @author Adam
@@ -104,16 +106,15 @@ public class ChessboardBoardView extends JFrame {
     }
 
     /** Update board cells from an 8x8 char[][] (expect '#' or 'X') */
-    public void updateBoard(ArrayList<ArrayList<Character>> board) {
+    public void updateBoard(ArrayList<ArrayList<SquareState>> board) {
         if (board == null || board.size() != 8) return;
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++) {
-                Character symbol = board.get(r).get(c);
+                SquareState state = board.get(r).get(c);
                 JButton btn = cells.get(r).get(c);
                 
-                if (symbol == 'X') {
+                if (state == SquareState.QUEEN) {
                 btn.setText("X"); // Ładny symbol hetmana
-                //btn.setForeground(Color.BLACK);
             } else {
                 btn.setText("#"); // Puste pole (lub "#" jeśli wolisz)
             }
