@@ -10,8 +10,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
+
 import model.ChessboardModel;
 import model.Position;
+import model.InvalidPositionException;
 
 /**
  *
@@ -46,8 +51,12 @@ public class ModelAssertionTest {
     // @Test
     // public void hello() {}
     
-    // ==== TEST PARSE ====
+    // ========================
+    // ====== TEST PARSE ======
+    // ========================
     
+    // === Positive tests ===
+
     @Test
     public void testParseCornerA1() {
         String pos = "A1";
@@ -91,6 +100,36 @@ public class ModelAssertionTest {
                 () -> assertEquals(3, result.col())
                 );
     }
+    
+    // === Negative tests ===
+    
+    @Test
+    public void testParseNull() {
+        assertThrows(NullPointerException.class, ()-> {
+            model.parse(null);
+        });
+    }
+    
+    // === Parameterized test ===
+    
+    @ParameterizedTest()
+    @CsvSource({
+        "A1, 0, 0",
+        "H8, 7, 7",
+        "D4, 3, 3",
+        "B2, 1, 1",  
+        "a1, 0, 0",   
+        "h8, 7, 7"    
+    })
+    void testParseParameterized(String inputPosition, int expectedRow, int expectedCol) {
+        Position result = model.parse(inputPosition);
+
+        assertAll("Verifying given position: " + inputPosition,
+            () -> assertEquals(expectedRow, result.row(), "Wrong row index"),
+            () -> assertEquals(expectedCol, result.col(), "Wrong column index")
+        );
+    }
+    
     
     // ==== TEST ValidPlacement ====
     
