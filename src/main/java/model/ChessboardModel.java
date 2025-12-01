@@ -1,52 +1,54 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.*;
 
 /**
+ * Represents the data model for the 8 Queens Puzzle.
+ * It stores the state of the chessboard and provides methods to manipulate and validate it.
  *
  * @author Adam
+ * @version 3.0
  */
 @Getter
-public class ChessboardModel{
+public class ChessboardModel {
     
-    /** Constructor initializing an empty chessboard */
+    /** Board dimension (8x8). */
+    private static final int SIZE = 8;
+    
+    /** * Double array list representing the chessboard grid.
+     * Stores the state of each square (EMPTY or QUEEN).
+     */
+    private ArrayList<ArrayList<SquareState>> board = new ArrayList<ArrayList<SquareState>>();
+    
+    /** * Constructor initializing an empty chessboard.
+     */
     public ChessboardModel() {
         clearBoard();
     }
     
-    /** Board dimension */
-    private static final int SIZE = 8;
-    /** Double array list representing the chessboard */
-    private ArrayList<ArrayList<SquareState>> board = new ArrayList<ArrayList<SquareState>>();
-    
-    /** Constant variable for the queen symbol */
-    //private static final Character QUEEN_SYMBOL = 'X';
-    /** Constant variable for the */
-    //private static final Character EMPTY_SYMBOL = '#';
-    
-    /** Method that clears the chessboard */
+    /** * Clears the chessboard by setting all squares to EMPTY.
+     * Uses Stream API to generate rows and columns.
+     */
     public void clearBoard() {
         board.clear(); 
         
-        for (int i = 0; i < SIZE; i++) {
-            //New ArrayList representing a row
-            ArrayList<SquareState> row = new ArrayList<SquareState>();
-            
-            for (int j = 0; j < SIZE; j++) {
-                //Filling newly created row with empty symbols
-                row.add(SquareState.EMPTY);
-            }
-            
-            //Adding the empty row to the main chessboard
+        IntStream.range(0, SIZE).forEach(i -> {
+            ArrayList<SquareState> row = IntStream.range(0, SIZE)
+                    .mapToObj(j -> SquareState.EMPTY)
+                    .collect(Collectors.toCollection(ArrayList::new));
             board.add(row);
-        }
+        });
     }
     
+    /**
+     * Parses a string representation of a position into a Position object.
+     *
+     * @param pos The position string (e.g., "A1").
+     * @return A {@link Position} record containing row and column indices.
+     */
     public Position parse(String pos) {
         String posUC = pos.toUpperCase();
         int c = posUC.charAt(0) - 'A';
@@ -54,63 +56,82 @@ public class ChessboardModel{
         return new Position(r,c);
     }
     
-    /** Method that places a queen */
+    /** * Places a queen at the specified position on the board.
+     *
+     * @param pos The position string where the queen should be placed.
+     */
     public void placeQueen(String pos) {
         Position p = parse(pos);
-        
         board.get(p.row()).set(p.col(), SquareState.QUEEN);
     }
     
+    /**
+     * Validates if a position string is syntactically correct and if the square is empty.
+     *
+     * @param pos The position string to validate.
+     * @throws InvalidPositionException If the input is null, bad length, out of bounds, or occupied.
+     */
     public void isValidPlacement(String pos) throws InvalidPositionException {
-        //Checks if given position is not null and is of correct length
-        if (pos==null || pos.length()!=2) {
+        // Checks if given position is not null and is of correct length
+        if (pos == null || pos.length() != 2) {
             throw new InvalidPositionException("User input is too short or too long.");
         }
         
         Position p = parse(pos);
         
-        //Checks if given position is in the correct format: XY where X=[A,H] and Y=[1,8]
-        if (p.col()<0 || p.col()>7 || p.row()<0 || p.row()>7) {
+        // Checks if given position is in the correct format: XY where X=[A,H] and Y=[1,8]
+        if (p.col() < 0 || p.col() > 7 || p.row() < 0 || p.row() > 7) {
             throw new InvalidPositionException("Position out of range.");
         }
         
-        //Checks if given position is occupied
-        if(board.get(p.row()).get(p.col()) != SquareState.EMPTY) {
+        // Checks if given position is occupied
+        if (board.get(p.row()).get(p.col()) != SquareState.EMPTY) {
             throw new InvalidPositionException("Position occupied by other queen");
         }   
     }
-    /** Scans chessboard and returns a position if it's occupied by a queen */
+
+    /** * Scans the chessboard and returns a list of positions occupied by queens.
+     * <p>
+     * <b>Stream API Implementation:</b>
+     * This method uses Java Streams and lambda expressions to filter the collection
+     * and map coordinates to Position objects.
+     * </p>
+     *
+     * @return An ArrayList of {@link Position} objects representing queen locations.
+     */
     private ArrayList<Position> getQueenPositions() {
-        ArrayList<Position> queens = new ArrayList<Position>();
-        
-        for (int r=0; r<SIZE; r++) {
-            for (int c=0; c<SIZE; c++) {
-                if(board.get(r).get(c) == SquareState.QUEEN) {
-                    queens.add(new Position(r,c));
-                }
-            }
-        }
-        
-        return queens;
+        return IntStream.range(0, SIZE)
+                .boxed()
+                .flatMap(r -> IntStream.range(0, SIZE)
+                        .filter(c -> board.get(r).get(c) == SquareState.QUEEN)
+                        .mapToObj(c -> new Position(r, c)))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
     
-    /** Searches for a queen on the board, if found runs attackAnotherQueen to check if placement is correct for the puzzle */
+    /** * Checks if the current arrangement of queens is a valid solution to the puzzle.
+     * A solution is valid if no queen attacks another.
+     *
+     * @return true if the solution is valid, false otherwise.
+     */
     public boolean isSolutionValid() {
         ArrayList<Position> foundQueens = getQueenPositions();
         
-        for(Position p : foundQueens) {
-            if(attacksAnotherQueen(p))
+        // Requirement: Keep the for-each loop here
+        for (Position p : foundQueens) {
+            if (attacksAnotherQueen(p))
                 return false;
         }
         
         return true;
     }
     
-    /** Checks whether a queen attacks any other queen. */
+    /** * Checks whether a specific queen attacks any other queen on the board.
+     * Checks rows, columns, and diagonals.
+     *
+     * @param p The position of the queen to check.
+     * @return true if the queen attacks another, false otherwise.
+     */
     private boolean attacksAnotherQueen(Position p) {
-        //int row = p.row();
-        //int col = p.col();
-        
         // Check row and column
         for (int i = 0; i < SIZE; i++) {
             if (i != p.col() && board.get(p.row()).get(i) == SquareState.QUEEN) return true;
@@ -131,5 +152,4 @@ public class ChessboardModel{
         }
         return false;
     }
-    
 }

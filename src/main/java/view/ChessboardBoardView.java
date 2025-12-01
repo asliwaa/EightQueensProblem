@@ -1,6 +1,3 @@
-/**
- * Package containing the view components for the Eight Queens Puzzle application (following the MVC pattern).
- */
 package view;
 
 import javax.swing.*;
@@ -11,21 +8,29 @@ import java.util.ArrayList;
 import model.SquareState;
 
 /**
- * 
+ * The secondary GUI window that visualizes the chessboard.
+ * It displays the 8x8 grid with placed queens and shows the validation status.
+ *
  * @author Adam
+ * @version 1.0
  */
 public class ChessboardBoardView extends JFrame {
     
-    /** 8x8 array of JButtons representing the chessboard cells. */
-    //private final JButton[][] cells = new JButton[8][8];
+    /**
+     * A grid of JButtons representing the chessboard cells.
+     * Stored as a list of rows to allow easy indexing.
+     */
     private final ArrayList<ArrayList<JButton>> cells = new ArrayList<ArrayList<JButton>>(8);
-    /** Label at the bottom displaying the placement status. */
+    
+    /** Label at the bottom displaying the placement status (Success/Failure). */
     private final JLabel statusLabel = new JLabel("", SwingConstants.CENTER);
-    /** Button to start a new game/reset the board. */
+    
+    /** Button to reset the board and start a new game. */
     private final JButton resetButton = new JButton("Start New / Reset");
 
     /**
      * Constructs the ChessboardBoardView and initializes the GUI components.
+     * Sets up the window properties such as title, close operation, and location.
      */
     public ChessboardBoardView() {
         super("Eight Queens - Board");
@@ -37,6 +42,7 @@ public class ChessboardBoardView extends JFrame {
 
     /**
      * Initializes and arranges the graphical interface components.
+     * Creates the chessboard grid, adds row/column labels, and sets up the status panel.
      */
     private void initComponents() {
         Container cp = getContentPane();
@@ -46,7 +52,7 @@ public class ChessboardBoardView extends JFrame {
         mainPanel.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
         
         // Top: headers (A..H)
-        JPanel north = new JPanel(new GridLayout(1, 9)); // POPRAWKA: Usunięto 'new'
+        JPanel north = new JPanel(new GridLayout(1, 9));
         north.add(new JLabel("")); // corner
         for (char c = 'A'; c <= 'H'; c++) {
             JLabel l = new JLabel(String.valueOf(c), SwingConstants.CENTER);
@@ -58,7 +64,7 @@ public class ChessboardBoardView extends JFrame {
         JPanel center = new JPanel(new GridLayout(8, 9));
         
         for (int r = 0; r < 8; r++) {
-            // A. Tworzymy listę dla wiersza przycisków
+            // A. Create a list for the row of buttons
             ArrayList<JButton> rowList = new ArrayList<>();
             
             // row number label
@@ -72,21 +78,21 @@ public class ChessboardBoardView extends JFrame {
                 if ((r + c) % 2 == 0) cell.setBackground(Color.WHITE);
                 else cell.setBackground(Color.LIGHT_GRAY);
                 
-                // B. Dodajemy przycisk do listy wiersza
+                // B. Add button to row list
                 rowList.add(cell);
                 
-                // Dodajemy przycisk do panelu (wizualnie)
+                // Add button to panel (visually)
                 center.add(cell);
             }
             
-            // C. Dodajemy wiersz do głównej listy cells
+            // C. Add row to main cells list
             cells.add(rowList);
         }
         
         mainPanel.add(center, BorderLayout.CENTER);
         cp.add(mainPanel, BorderLayout.CENTER);
 
-        // bottom: status and reset button
+        // Bottom: status and reset button
         JPanel southPanel = new JPanel(new BorderLayout());
         statusLabel.setBorder(BorderFactory.createEmptyBorder(6,6,6,6));
         southPanel.add(statusLabel, BorderLayout.NORTH);
@@ -105,7 +111,12 @@ public class ChessboardBoardView extends JFrame {
         setPreferredSize(new Dimension(450, 480));
     }
 
-    /** Update board cells from an 8x8 char[][] (expect '#' or 'X') */
+    /**
+     * Updates the visual representation of the board based on the model state.
+     * Iterates through the provided board state and updates the text of corresponding JButtons.
+     *
+     * @param board The current state of the chessboard, represented as a list of lists of {@link SquareState}.
+     */
     public void updateBoard(ArrayList<ArrayList<SquareState>> board) {
         if (board == null || board.size() != 8) return;
         for (int r = 0; r < 8; r++) {
@@ -114,20 +125,28 @@ public class ChessboardBoardView extends JFrame {
                 JButton btn = cells.get(r).get(c);
                 
                 if (state == SquareState.QUEEN) {
-                btn.setText("X"); // Ładny symbol hetmana
-            } else {
-                btn.setText("#"); // Puste pole (lub "#" jeśli wolisz)
-            }
+                    btn.setText("X");
+                } else {
+                    btn.setText("#");
+                }
             }
         }
     }
 
-    /** Sets the status text displayed at the bottom of the window */
+    /**
+     * Sets the status text displayed at the bottom of the window.
+     *
+     * @param text The status message to display (e.g., "SUCCESS" or "FAILURE").
+     */
     public void setStatus(String text) {
         statusLabel.setText(text);
     }
     
-    /** Adds an ActionListener to the Reset/Start New button */
+    /**
+     * Registers an ActionListener for the "Reset/Start New" button.
+     *
+     * @param l The ActionListener to handle the button click event.
+     */
     public void addResetListener(ActionListener l) {
         resetButton.addActionListener(l);
     }

@@ -7,8 +7,10 @@ package model;
 import lombok.experimental.StandardException;
 
 /**
+ * Custom exception thrown when an invalid queen position is provided.
  *
  * @author Adam
+ * @version 3.0
  */
 @StandardException
 public class InvalidPositionException extends Exception {
