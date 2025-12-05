@@ -44,16 +44,10 @@ public class ModelAssertionTest {
     @org.junit.jupiter.api.AfterEach
     public void tearDown() throws Exception {
     }
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
     
-    // ========================
-    // ====== TEST PARSE ======
-    // ========================
+    // ====================
+    // ==== TEST PARSE ====
+    // ====================
     
     // === Positive tests ===
 
@@ -130,11 +124,14 @@ public class ModelAssertionTest {
         );
     }
     
-    
-    // ==== TEST ValidPlacement ====
+    // ===============================
+    // ==== TEST isValidPlacement ====
+    // ===============================
+
+    // === Positive tests ===
     
     @Test
-    public void testValidPlacement() {
+    public void testIsValidPlacement() {
         assertAll("Valid placements",
                 () -> assertDoesNotThrow(() -> model.isValidPlacement("A1"),"A1 is okay"),
                 () -> assertDoesNotThrow(() -> model.isValidPlacement("H8"),"H8 is okay"),
@@ -142,10 +139,59 @@ public class ModelAssertionTest {
                 );
     }
     
-    // ==== TEST SolutionValid ====
+    // === Negative tests ===
     
     @Test
-    public void testEmptyBoardIsValid() {
+    public void testIsValidPlacementEmpty() {
+        try {
+            model.isValidPlacement("");
+            fail("Position cannot be empty");
+        } catch(InvalidPositionException e) {}
+    }
+    
+    @Test
+    public void testIsValidPlacementWrongLength() {
+        try {
+            model.isValidPlacement("A21");
+            fail("Position is too long");
+        } catch (InvalidPositionException e) {}
+        
+        try {
+           model.isValidPlacement("X");
+           fail("Position is too short"); 
+        } catch (InvalidPositionException e) {}
+    }
+    
+    @Test
+    public void testIsValidPlacementOutOfRange() {
+        try {
+            model.isValidPlacement("a0");
+            fail("Row out of range");
+        } catch (InvalidPositionException e) {}
+        
+        try {
+            model.isValidPlacement("X7");
+            fail("Column out of range");
+        } catch (InvalidPositionException e) {}
+        
+        try {
+            model.isValidPlacement("O9");
+            fail("Position out of range");
+        } catch (InvalidPositionException e) {}
+    }
+    
+    // === Parameterized test ===
+    
+    //to do
+    
+    // ============================
+    // ==== TEST SolutionValid ====
+    // ============================
+    
+    // === Positive tests ===
+
+    @Test
+    public void testIsEmptyBoardIsValid() {
         boolean isValid = model.isSolutionValid();
         
         assertTrue(isValid, "No queens = no attacks");
@@ -174,5 +220,8 @@ public class ModelAssertionTest {
         boolean isValid = model.isSolutionValid();
         assertTrue(isValid);
     }
+
+    // === Negative tests ===
+
     
 }
