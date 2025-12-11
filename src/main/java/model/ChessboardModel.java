@@ -10,7 +10,7 @@ import lombok.*;
  * It stores the state of the chessboard and provides methods to manipulate and validate it.
  *
  * @author Adam
- * @version 3.0
+ * @version 4.0
  */
 @Getter
 public class ChessboardModel {

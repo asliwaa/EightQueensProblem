@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
  * a list of accepted positions.
  *
  * @author Adam
- * @version 1.0
+ * @version 4.0
  */
 public class ChessboardEntryView extends JFrame {
     

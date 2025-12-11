@@ -12,7 +12,7 @@ import model.SquareState;
  * It displays the 8x8 grid with placed queens and shows the validation status.
  *
  * @author Adam
- * @version 1.0
+ * @version 4.0
  */
 public class ChessboardBoardView extends JFrame {
     

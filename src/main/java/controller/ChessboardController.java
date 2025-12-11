@@ -11,7 +11,7 @@ import java.awt.event.ActionEvent;
  * Controller class managing the interaction between the Model and the Views.
  * It handles user inputs (GUI and CLI), updates the model state, and switches between views.
  * * @author Adam
- * * @version 3.0
+ * * @version 4.0
  */
 public class ChessboardController {
     

@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
  * Enum representing the state of a single square on the chessboard.
  *
  * @author Adam
- * @version 3.0
+ * @version 4.0
  */
 @Getter
 @RequiredArgsConstructor
