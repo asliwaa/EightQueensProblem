@@ -1,9 +1,13 @@
 pojekt\eightqueensproblem\model\ChessboardModel.class
-pojekt\eightqueensproblem\model\InvalidPositionException.class
-pojekt\eightqueensproblem\controller\ChessboardController.class
+pojekt\eightqueensproblem\service\DatabaseTest.class
 pojekt\eightqueensproblem\model\package-info.class
 pojekt\eightqueensproblem\controller\HistoryController.class
 pojekt\eightqueensproblem\JakartaRestConfiguration.class
+pojekt\eightqueensproblem\entities\Move.class
+pojekt\eightqueensproblem\model\InvalidPositionException.class
+pojekt\eightqueensproblem\controller\ChessboardController.class
+pojekt\eightqueensproblem\entities\Game.class
+pojekt\eightqueensproblem\service\DatabaseService.class
 pojekt\eightqueensproblem\model\Position.class
 pojekt\eightqueensproblem\model\SquareState.class
 pojekt\eightqueensproblem\resources\JakartaEE10Resource.class
